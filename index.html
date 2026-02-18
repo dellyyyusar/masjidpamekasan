@@ -35,9 +35,8 @@
   #app{
     width:100vw; height:100vh;
     display:grid;
-    /* left col bigger (info) | right col smaller (calendar) */
-    grid-template-columns: 1.7fr 1fr;
-    grid-template-rows: 58px 1fr;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 78px 1fr;
     grid-template-areas:
       "hdr hdr"
       "left right";
@@ -73,19 +72,32 @@
   .card::before{content:'';position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(135deg,rgba(200,168,75,.03) 0%,transparent 50%);}
 
-  /* ─── HEADER ─── */
+  /* ─── HEADER (taller) ─── */
   #hdr{
     grid-area:hdr;
     background:linear-gradient(100deg,#060E1A,#0D1C30,#060E1A);
     border:1px solid var(--border); border-radius:12px;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0 16px; position:relative;overflow:hidden;z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    position:relative;
+    overflow:hidden;
+    z-index:1;
+    min-height: 78px;
   }
   #hdr::before{content:'';position:absolute;inset:0;
     background:radial-gradient(ellipse 80% 200% at 50% -60%,rgba(200,168,75,.1) 0%,transparent 60%);}
   .dome{position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:.06;pointer-events:none}
 
-  /* ─── LEFT ─── */
+  /* Fix for clock visibility */
+  #clock-time, #clock-date {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* ─── LEFT (full width table) ─── */
   #left{
     grid-area:left;
     display:grid;
@@ -94,7 +106,7 @@
     overflow:hidden; position:relative;z-index:1;
   }
 
-  /* ─── RIGHT (calendar only) ─── */
+  /* ─── RIGHT (calendar now 1/3 of width - half size) ─── */
   #right{
     grid-area:right;
     display:flex;flex-direction:column;
@@ -103,29 +115,32 @@
 
   /* ── countdown ── */
   .cd-box{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.22);
-    border-radius:10px;min-width:52px;text-align:center;padding:6px 10px;}
-  .cd-num{font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:var(--gold2);line-height:1}
-  .cd-lbl{font-size:8px;color:var(--muted);margin-top:2px;letter-spacing:.05em;text-transform:uppercase}
+    border-radius:10px;min-width:58px;text-align:center;padding:8px 6px;}
+  .cd-num{font-family:'Amiri',serif;font-size:2rem;font-weight:700;color:var(--gold2);line-height:1}
+  .cd-lbl{font-size:9px;color:var(--muted);margin-top:2px;letter-spacing:.05em;text-transform:uppercase}
   @keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.8)}}
   .dot{width:7px;height:7px;border-radius:50%;background:var(--gold2);display:inline-block;animation:pd 2s infinite}
 
   /* ── imsak/buka big ── */
-  .big-val{font-family:'Amiri',serif;font-size:2.6rem;line-height:1;font-weight:700}
+  .big-val{font-family:'Amiri',serif;font-size:3.2rem;line-height:1;font-weight:700}
 
-  /* ── prayer rows ── */
+  /* ── prayer rows (SMALLER FONT & PADDING) ── */
   .pr{
     display:flex;align-items:center;justify-content:space-between;
-    padding:0 16px;
+    padding: 0.1rem 30px;
     border-bottom:1px solid rgba(255,255,255,.04);
     border-left:3px solid transparent;
     transition:background .15s,border-color .15s;
     flex:1;
+    font-size:13px;
   }
   .pr:last-child{border-bottom:none}
   .pr.now{background:rgba(200,168,75,.1);border-left-color:var(--gold)}
-  .pr-time{font-family:'Amiri',serif;font-size:1.25rem;font-weight:700;color:var(--gold2)}
+  .pr-time{font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;color:var(--gold2)}
+  .pr .icon { font-size: 1.0rem; width: 24px; text-align: center; }
+  .pr .label { font-size: 11px; font-weight: 600; }
 
-  /* ─── CALENDAR (compact) ─── */
+  /* ─── CALENDAR (compact, half size) ─── */
   .kal-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
   .kal-scroll::-webkit-scrollbar{width:2px}
   .kal-scroll::-webkit-scrollbar-track{background:transparent}
@@ -133,19 +148,19 @@
 
   table{width:100%;border-collapse:collapse}
   thead th{
-    padding:5px 3px;
-    text-align:center;font-size:8px;text-transform:uppercase;
-    letter-spacing:.06em;color:var(--muted);font-weight:700;
+    padding:3px 2px;
+    text-align:center;font-size:7px;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--muted);font-weight:700;
     border-bottom:1px solid rgba(255,255,255,.07);
     position:sticky;top:0;background:var(--p1);z-index:2;
   }
-  thead th:first-child{text-align:left;padding-left:8px}
+  thead th:first-child{text-align:left;padding-left:4px}
   tbody td{
-    padding:4px 3px;
-    text-align:center;font-size:10px;
+    padding:3px 2px;
+    text-align:center;font-size:9px;
     border-bottom:1px solid rgba(255,255,255,.03);
   }
-  tbody td:first-child{text-align:left;padding-left:8px;font-weight:600}
+  tbody td:first-child{text-align:left;padding-left:4px;font-weight:600}
   tbody tr:last-child td{border-bottom:none}
   .tr-t td{background:rgba(200,168,75,.1)}
   .tr-t td:first-child{color:var(--gold2)}
@@ -171,6 +186,28 @@
     border:none;border-radius:8px;padding:9px 22px;cursor:pointer;font-family:'DM Sans',sans-serif;
     font-size:13px;transition:opacity .2s,transform .12s}
   .btn:hover{opacity:.88;transform:translateY(-1px)}
+
+  /* symmetrical adjustments for top row */
+  #top-row .grid.gap-3 { gap: 1.2rem; }
+  #top-row .card {
+    padding: 1.5rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #top-row .card p { text-align: center; }
+  #cd-boxes { justify-content: center; margin-top: 0.75rem; }
+
+  /* header text */
+  #hdr .amiri.text-xl { font-size: 1.5rem; }
+  #hdr .chip { font-size: 10px; padding: 3px 10px; }
+
+  /* calendar extra small */
+  #kal-wrap .px-2 { padding-left: 0.3rem; padding-right: 0.3rem; }
+  #kal-wrap .slabel { font-size: 7px; }
+  #kal-wrap .text-\[9px\] { font-size: 7px !important; }
+  #kal-wrap .border-t p { font-size: 6px; }
 </style>
 </head>
 <body>
@@ -179,27 +216,27 @@
 
 <div id="app">
 
-  <!-- ══ HEADER ══ -->
+  <!-- ══ HEADER (tall) ══ -->
   <div id="hdr">
-    <svg class="dome" width="360" height="58" viewBox="0 0 360 58">
-      <path d="M10 58 Q180 -6 350 58" stroke="#C8A84B" stroke-width="1.8" fill="none"/>
-      <path d="M65 58 Q180 16 295 58" stroke="#C8A84B" stroke-width="1" fill="none"/>
-      <rect x="173" y="0" width="14" height="22" rx="2" fill="#C8A84B" opacity=".8"/>
-      <polygon points="180,0 173,10 187,10" fill="#C8A84B" opacity=".8"/>
+    <svg class="dome" width="360" height="78" viewBox="0 0 360 78">
+      <path d="M10 78 Q180 -6 350 78" stroke="#C8A84B" stroke-width="1.8" fill="none"/>
+      <path d="M65 78 Q180 26 295 78" stroke="#C8A84B" stroke-width="1" fill="none"/>
+      <rect x="173" y="10" width="14" height="28" rx="2" fill="#C8A84B" opacity=".8"/>
+      <polygon points="180,8 173,20 187,20" fill="#C8A84B" opacity=".8"/>
     </svg>
 
-    <div class="flex items-center gap-3 relative">
+    <div class="flex items-center gap-3 relative" style="flex: 1;">
       <div style="filter:drop-shadow(0 0 8px rgba(200,168,75,.45));flex-shrink:0">
-        <svg width="38" height="38" viewBox="0 0 38 38">
-          <circle cx="19" cy="19" r="13" fill="rgba(200,168,75,.12)" stroke="rgba(200,168,75,.45)" stroke-width="1.1"/>
-          <circle cx="24" cy="14" r="11.5" fill="#060E1A"/>
-          <circle cx="19" cy="19" r="2.2" fill="#C8A84B"/>
-          <polygon points="30,8 31.3,12.5 35.5,12.5 32.2,15 33.5,19.5 30,17 26.5,19.5 27.8,15 24.5,12.5 28.7,12.5" fill="#EDD270" opacity=".9"/>
+        <svg width="42" height="42" viewBox="0 0 42 42">
+          <circle cx="21" cy="21" r="15" fill="rgba(200,168,75,.12)" stroke="rgba(200,168,75,.45)" stroke-width="1.1"/>
+          <circle cx="27" cy="16" r="13" fill="#060E1A"/>
+          <circle cx="21" cy="21" r="2.5" fill="#C8A84B"/>
+          <polygon points="33,9 34.5,14 39,14 35.5,17 37,22 33,19 29,22 30.5,17 27,14 31.5,14" fill="#EDD270" opacity=".9"/>
         </svg>
       </div>
       <div>
-        <p class="amiri text-xl leading-tight relative" style="color:var(--gold2)">إمساكية رمضان ١٤٤٧ ه‍</p>
-        <div class="flex gap-1.5 mt-1 flex-wrap">
+        <p class="amiri text-2xl leading-tight relative" style="color:var(--gold2)">إمساكية رمضان ١٤٤٧ ه‍</p>
+        <div class="flex gap-2 mt-1.5 flex-wrap">
           <span class="chip cg">📍 Kab. Pamekasan · Jawa Timur</span>
           <span id="hijri-chip" class="chip cb hidden"></span>
           <span class="chip cr">1 Ramadhan = 19 Feb 2026</span>
@@ -207,15 +244,16 @@
       </div>
     </div>
 
-    <p id="hdr-status" class="text-xs relative hidden sm:block" style="color:var(--muted)"></p>
+    <p id="hdr-status" class="text-xs relative hidden sm:block" style="color:var(--muted); margin: 0 10px;"></p>
 
-    <div class="text-right relative">
-      <p id="clock-time" class="amiri text-2xl leading-tight" style="color:var(--gold2)"></p>
-      <p id="clock-date" class="text-xs mt-0.5" style="color:var(--muted)"></p>
+    <!-- CLOCK SECTION - FIXED VISIBILITY -->
+    <div class="text-right relative" style="flex-shrink: 0; min-width: 150px;">
+      <p id="clock-time" class="amiri text-3xl leading-tight" style="color:var(--gold2); display: block !important;">--:--:--</p>
+      <p id="clock-date" class="text-sm mt-1" style="color:var(--muted); display: block !important;">Loading...</p>
     </div>
   </div>
 
-  <!-- ══ LEFT ══ -->
+  <!-- ══ LEFT (FULL WIDTH TABLE) ══ -->
   <div id="left">
 
     <!-- loaders -->
@@ -230,27 +268,27 @@
       <div class="grid gap-3" style="grid-template-columns:1fr 1fr 1fr">
 
         <!-- countdown -->
-        <div class="card p-4 col-span-1" style="display:flex;flex-direction:column;justify-content:space-between">
-          <div>
-            <div class="flex items-center gap-1.5 mb-2">
+        <div class="card p-4 col-span-1" style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+          <div class="text-center w-full">
+            <div class="flex items-center justify-center gap-1.5 mb-2">
               <span class="dot"></span>
               <span class="slabel">Waktu Berikutnya</span>
             </div>
             <p id="cd-name" class="amiri text-xl font-bold leading-tight" style="color:var(--gold2)"></p>
             <p id="cd-time" class="text-xs mt-1" style="color:var(--muted)"></p>
           </div>
-          <div id="cd-boxes" class="flex items-center gap-1.5 mt-3"></div>
+          <div id="cd-boxes" class="flex items-center justify-center gap-1.5 mt-3"></div>
         </div>
 
         <!-- imsak -->
-        <div class="card p-4 text-center">
+        <div class="card p-4 text-center flex flex-col items-center justify-center">
           <span class="chip cb mb-2 block">🌑 IMSAK</span>
           <p id="imsak-val" class="big-val" style="color:#72c8ff">—</p>
           <p class="text-xs mt-1.5" style="color:var(--muted)">Sahur berakhir</p>
         </div>
 
         <!-- buka -->
-        <div class="card p-4 text-center">
+        <div class="card p-4 text-center flex flex-col items-center justify-center">
           <span class="chip co mb-2 block">🌇 BUKA PUASA</span>
           <p id="buka-val" class="big-val" style="color:#ffaa55">—</p>
           <p class="text-xs mt-1.5" style="color:var(--muted)">Waktu Maghrib</p>
@@ -259,7 +297,7 @@
       </div>
     </div>
 
-    <!-- ROW 2: jadwal sholat (fills remaining height) -->
+    <!-- ROW 2: jadwal sholat -->
     <div id="sholat-wrap" class="card hidden fu" style="display:none;flex:1;overflow:hidden;display:flex;flex-direction:column">
       <div class="slabel px-4 pt-3 pb-1.5 flex-shrink-0 flex items-center justify-between">
         <span>Jadwal Sholat Hari Ini</span>
@@ -270,39 +308,39 @@
 
   </div><!-- /left -->
 
-  <!-- ══ RIGHT (compact calendar) ══ -->
+  <!-- ══ RIGHT (calendar half size) ══ -->
   <div id="right">
 
     <div id="lr" class="shimmer" style="flex:1;min-height:200px"></div>
 
     <div id="kal-wrap" class="card hidden fu" style="display:none;flex:1;display:flex;flex-direction:column;overflow:hidden">
 
-      <!-- header -->
-      <div class="px-3 pt-2.5 pb-1.5 flex-shrink-0 border-b" style="border-color:rgba(255,255,255,.06)">
-        <p class="slabel">📅 Kalender Imsakiyah · Ramadhan 1447 H</p>
-        <p class="text-xs mt-0.5" style="color:var(--muted)">1 Ramadhan = Kamis, 19 Feb 2026 · <span id="kal-info"></span></p>
+      <!-- header (extra compact) -->
+      <div class="px-1 pt-1 pb-0.5 flex-shrink-0 border-b" style="border-color:rgba(255,255,255,.06)">
+        <p class="slabel text-center" style="font-size:6px;">📅 Imsakiyah · 1447 H</p>
+        <p class="text-[7px] text-center mt-0.5" style="color:var(--muted)">1 Ramadhan = 19 Feb · <span id="kal-info" style="font-size:6px;"></span></p>
       </div>
 
-      <!-- table -->
+      <!-- table with very compact styling -->
       <div class="kal-scroll" id="kal-scroll">
         <table>
           <thead>
             <tr>
-              <th style="text-align:left;padding-left:8px">Tgl · Date</th>
-              <th style="color:#72c8ff">Imsak</th>
-              <th>Subuh</th>
-              <th>Dzuhur</th>
-              <th>Ashar</th>
-              <th style="color:#ffaa55">Maghrib</th>
-              <th>Isya</th>
+              <th style="text-align:left;padding-left:3px">Tgl</th>
+              <th style="color:#72c8ff">Ims</th>
+              <th>Sub</th>
+              <th>Dzu</th>
+              <th>Ash</th>
+              <th style="color:#ffaa55">Mag</th>
+              <th>Isy</th>
             </tr>
           </thead>
           <tbody id="kal-body"></tbody>
         </table>
       </div>
 
-      <div class="px-3 py-1.5 flex-shrink-0 border-t" style="border-color:rgba(255,255,255,.04)">
-        <p class="text-center" style="font-size:8.5px;color:#1a3550">equran.id · Kementerian Agama RI</p>
+      <div class="px-1 py-0.5 flex-shrink-0 border-t text-center" style="border-color:rgba(255,255,255,.04)">
+        <p style="font-size:5px;color:#1a3550">equran.id · Kemenag</p>
       </div>
     </div>
 
@@ -336,7 +374,7 @@ const PROV = 'Jawa Timur';
 const KAB  = 'Kab. Pamekasan';
 
 // 1 Ramadhan 1447H = 19 Februari 2026
-const RAMADHAN_START = new Date(2026, 1, 19); // month is 0-indexed
+const RAMADHAN_START = new Date(2026, 1, 19);
 
 const ROWS=[
   {key:'imsak',  label:'Imsak',  icon:'🌑', c:'#72c8ff'},
@@ -351,37 +389,32 @@ const ROWS=[
 const CD_KEYS=['imsak','subuh','dzuhur','ashar','maghrib','isya'];
 const CD_LBL={imsak:'🌑 Imsak',subuh:'🌄 Subuh',dzuhur:'🕛 Dzuhur',ashar:'🌤️ Ashar',maghrib:'🌇 Maghrib',isya:'🌙 Isya'};
 
-// Month name mapping
 const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 const DAYS_ID=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
 let imsakData=[], todayEntry=null, cdTimer=null;
 
-/* Get the Gregorian date for Ramadhan day N (1-indexed) */
 function getGregorianDate(ramadhanDay){
   const d = new Date(RAMADHAN_START);
   d.setDate(d.getDate() + (ramadhanDay - 1));
   return d;
 }
 
-/* Format: "19 Feb" */
 function fmtShort(d){
   return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 
-/* What Ramadhan day is today? */
 function getRamadhanDay(){
   const now = new Date();
   const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startMidnight = new Date(RAMADHAN_START.getFullYear(), RAMADHAN_START.getMonth(), RAMADHAN_START.getDate());
   const diff = Math.round((nowMidnight - startMidnight) / 86400000) + 1;
-  return diff; // will be 1 on 19 Feb, 2 on 20 Feb, etc.
+  return diff;
 }
 
 async function boot(){
   setStatus('Memuat data equran.id...');
   showLoad(true); hideErr();
-  startClock();
 
   try{
     const data = await postFallback(API, {provinsi:PROV, kabkota:KAB});
@@ -395,9 +428,7 @@ async function boot(){
       ch.classList.remove('hidden');
     }
 
-    // Find today's entry by Ramadhan day number
     const ramDay = getRamadhanDay();
-    // API returns tanggal as the Ramadhan day number (1,2,3...)
     todayEntry = imsakData.find(d => d.tanggal === ramDay) || imsakData[0];
 
     renderImsakBuka();
@@ -440,9 +471,9 @@ function renderSholat(){
   const list = document.getElementById('sholat-list');
   list.innerHTML = ROWS.map(r => `
     <div class="pr" id="pr-${r.key}">
-      <div class="flex items-center gap-2.5">
-        <span style="font-size:1.1rem;width:26px;text-align:center">${r.icon}</span>
-        <span style="font-size:13px;font-weight:600;color:${r.c}">${r.label}</span>
+      <div class="flex items-center gap-1.5">
+        <span class="icon">${r.icon}</span>
+        <span class="label" style="color:${r.c}">${r.label}</span>
       </div>
       <span class="pr-time">${todayEntry?.[r.key] || '—'}</span>
     </div>`).join('');
@@ -450,7 +481,7 @@ function renderSholat(){
 
 function renderKalender(){
   const ramDay = getRamadhanDay();
-  document.getElementById('kal-info').textContent = imsakData.length + ' hari';
+  document.getElementById('kal-info').textContent = imsakData.length + ' hr';
 
   document.getElementById('kal-body').innerHTML = imsakData.map(e => {
     const isT = e.tanggal === ramDay;
@@ -459,8 +490,8 @@ function renderKalender(){
     return `<tr class="${isT ? 'tr-t' : ''}">
       <td>
         <span class="font-bold">${e.tanggal}</span>
-        <span style="color:var(--muted);font-size:9px;margin-left:3px">${gregLabel}</span>
-        ${isT ? '<span style="color:var(--gold2);font-size:9px"> ◀</span>' : ''}
+        <span style="color:var(--muted);font-size:7px;margin-left:1px">${gregLabel}</span>
+        ${isT ? '<span style="color:var(--gold2);font-size:7px">◀</span>' : ''}
       </td>
       <td style="color:#72c8ff">${e.imsak||'—'}</td>
       <td>${e.subuh||'—'}</td>
@@ -495,7 +526,6 @@ function startCountdown(){
       return dt > now ? {k,dt,t} : null;
     }).filter(Boolean);
 
-    const card = document.getElementById('top-row');
     if(!upcoming.length){
       document.getElementById('cd-name').textContent = 'Selesai hari ini';
       document.getElementById('cd-time').textContent = '';
@@ -510,9 +540,9 @@ function startCountdown(){
     const h=Math.floor(diff/3600), m=Math.floor((diff%3600)/60), s=diff%60;
     document.getElementById('cd-boxes').innerHTML =
       `<div class="cd-box"><div class="cd-num">${pad(h)}</div><div class="cd-lbl">Jam</div></div>
-       <span style="color:var(--muted);padding-bottom:18px;font-size:1.1rem">:</span>
+       <span style="color:var(--muted);padding-bottom:18px;font-size:1.3rem">:</span>
        <div class="cd-box"><div class="cd-num">${pad(m)}</div><div class="cd-lbl">Mnt</div></div>
-       <span style="color:var(--muted);padding-bottom:18px;font-size:1.1rem">:</span>
+       <span style="color:var(--muted);padding-bottom:18px;font-size:1.3rem">:</span>
        <div class="cd-box"><div class="cd-num">${pad(s)}</div><div class="cd-lbl">Dtk</div></div>`;
 
     document.querySelectorAll('.pr').forEach(r=>r.classList.remove('now'));
@@ -525,10 +555,13 @@ function startClock(){
   if(window._ck) clearInterval(window._ck);
   function tick(){
     const n = new Date();
-    document.getElementById('clock-time').textContent = n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    document.getElementById('clock-date').textContent = n.toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+    const timeEl = document.getElementById('clock-time');
+    const dateEl = document.getElementById('clock-date');
+    if(timeEl) timeEl.textContent = n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    if(dateEl) dateEl.textContent = n.toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
   }
-  tick(); window._ck = setInterval(tick, 1000);
+  tick(); 
+  window._ck = setInterval(tick, 1000);
 }
 
 function showLoad(v){
@@ -538,7 +571,7 @@ function showLoad(v){
 function show(id){
   const el = document.getElementById(id);
   el.classList.remove('hidden');
-  el.style.display = id==='top-row' ? '' : id==='sholat-wrap' ? 'flex' : id==='kal-wrap' ? 'flex' : '';
+  el.style.display = id==='top-row' ? 'grid' : id==='sholat-wrap' ? 'flex' : id==='kal-wrap' ? 'flex' : '';
 }
 function showErr(msg){
   document.getElementById('err-msg').textContent = msg;
@@ -549,9 +582,14 @@ function hideErr(){
   const e = document.getElementById('err');
   e.classList.add('hidden'); e.style.display = 'none';
 }
-function setStatus(t){ document.getElementById('hdr-status').textContent = t; }
+function setStatus(t){ 
+  const el = document.getElementById('hdr-status');
+  if(el) el.textContent = t; 
+}
 function pad(n){ return String(n).padStart(2,'0'); }
 
+// Start everything
+startClock();
 boot();
 </script>
 </body>

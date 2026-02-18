@@ -14,107 +14,136 @@
                               radial-gradient(at 100% 100%, hsla(158, 82%, 15%, 1) 0, transparent 50%);
         }
         [x-cloak] { display: none !important; }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee { display: inline-block; animation: marquee 40s linear infinite; }
     </style>
 </head>
 <body class="bg-mesh text-white min-h-screen flex items-center justify-center" 
-      x-data="jadwalSholat()" 
+      x-data="masjidDashboard()" 
       x-init="init()">
 
     <div x-show="loading" 
-         class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center transition-opacity"
-         x-transition:leave="duration-700 opacity-0">
-        <div class="w-14 h-14 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-emerald-500 font-bold tracking-widest text-xs">MENGHUBUNGKAN API...</p>
+         class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center transition-opacity duration-700"
+         :class="!loading ? 'opacity-0 pointer-events-none' : 'opacity-100'">
+        <div class="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-emerald-500 font-bold tracking-[0.3em] text-xs animate-pulse" x-text="statusMsg"></p>
     </div>
 
-    <div class="w-full h-screen flex flex-col p-8 lg:p-12 justify-between relative" x-cloak>
+    <div class="w-full h-screen flex flex-col p-8 lg:p-12 justify-between relative" x-cloak x-show="!loading">
         
         <div class="flex justify-between items-start">
-            <div>
-                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tighter text-emerald-400 italic">MASJID PAMEKASAN</h1>
+            <div class="animate-fade-in">
+                <h1 class="text-5xl font-black tracking-tighter text-emerald-400 italic">MASJID PAMEKASAN</h1>
                 <p class="text-xl text-slate-400 mt-2 font-medium italic" x-text="tanggalIndo"></p>
             </div>
             <div class="text-right">
-                <div class="text-6xl lg:text-8xl font-black tabular-nums tracking-tighter text-white leading-none" x-text="waktuSekarang">00:00:00</div>
+                <div class="text-7xl lg:text-8xl font-black tabular-nums tracking-tighter text-white leading-none" x-text="waktuSekarang">00:00:00</div>
                 <p class="text-emerald-500 font-bold tracking-[0.3em] text-xs mt-2 uppercase">Waktu Indonesia Barat</p>
             </div>
         </div>
 
-        <div class="flex flex-col items-center">
-            <div class="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 lg:px-24 lg:py-16 rounded-[4rem] text-center shadow-2xl">
-                <p class="text-slate-400 uppercase tracking-[0.5em] font-bold mb-4 text-sm">Maghrib (Buka Puasa)</p>
-                <h2 class="text-[12rem] lg:text-[16rem] leading-none font-black text-emerald-400 tabular-nums drop-shadow-2xl" x-text="jadwal.maghrib">--:--</h2>
+        <div class="flex flex-col items-center justify-center flex-grow">
+            <div class="bg-white/5 backdrop-blur-3xl border border-white/10 p-12 lg:px-24 lg:py-16 rounded-[4rem] text-center shadow-2xl relative">
+                <p class="text-slate-400 uppercase tracking-[0.5em] font-bold mb-4 text-sm">Maghrib (Waktu Berbuka)</p>
+                <h2 class="text-[12rem] lg:text-[15rem] leading-none font-black text-emerald-400 tabular-nums drop-shadow-2xl" x-text="jadwal.maghrib">--:--</h2>
+                <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-emerald-600 px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase shadow-lg shadow-emerald-900/40">
+                    Jadwal Hari Ini
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-5 gap-6">
+        <div class="grid grid-cols-5 gap-6 mb-4">
             <template x-for="(waktu, nama) in listSholat" :key="nama">
-                <div class="bg-black/40 backdrop-blur-md p-8 rounded-3xl border border-white/5 text-center transition-all duration-500"
-                     :class="{'border-emerald-500/50 bg-emerald-500/10 shadow-lg shadow-emerald-500/10': cekAktif(nama)}">
-                    <p class="font-bold text-xs uppercase mb-3 tracking-widest" 
-                       :class="cekAktif(nama) ? 'text-emerald-400' : 'text-slate-500'" 
-                       x-text="nama"></p>
-                    <p class="text-4xl lg:text-5xl font-bold tracking-tighter" x-text="waktu">--:--</p>
+                <div class="bg-black/40 backdrop-blur-md p-6 lg:p-8 rounded-3xl border border-white/5 text-center transition-all duration-500 hover:bg-white/5">
+                    <p class="text-slate-500 font-bold text-[10px] lg:text-xs uppercase mb-3 tracking-widest" x-text="nama"></p>
+                    <p class="text-3xl lg:text-5xl font-bold tracking-tighter" x-text="waktu">--:--</p>
                 </div>
             </template>
+        </div>
+
+        <div class="w-full bg-emerald-950/30 backdrop-blur-sm py-3 overflow-hidden rounded-2xl border border-emerald-500/10">
+            <div class="animate-marquee whitespace-nowrap flex gap-20">
+                <span class="text-emerald-400 font-bold italic uppercase tracking-wider text-sm">Luruskan dan rapatkan shaf...</span>
+                <span class="text-white font-medium italic text-sm tracking-wide">Matikan suara Handphone...</span>
+                <span class="text-emerald-400 font-bold italic uppercase tracking-wider text-sm">Pamekasan Kota Gerbang Salam...</span>
+                <span class="text-white font-medium italic text-sm tracking-wide">Semoga amal ibadah kita diterima Allah SWT...</span>
+            </div>
         </div>
     </div>
 
     <script>
-        function jadwalSholat() {
+        function masjidDashboard() {
             return {
                 loading: true,
+                statusMsg: 'MENYINKRONKAN DATA...',
                 waktuSekarang: '00:00:00',
                 tanggalIndo: '',
-                jadwal: {},
+                jadwal: { maghrib: '--:--' },
                 listSholat: { imsak: '--:--', subuh: '--:--', dzuhur: '--:--', ashar: '--:--', isya: '--:--' },
 
                 init() {
-                    this.updateTime();
-                    setInterval(() => this.updateTime(), 1000);
+                    this.clockTick();
+                    setInterval(() => this.clockTick(), 1000);
                     this.fetchData();
-                    // Auto-refresh data setiap jam
-                    setInterval(() => this.fetchData(), 3600000);
+                    // Auto-sync setiap 3 jam
+                    setInterval(() => this.fetchData(), 10800000);
                 },
 
-                updateTime() {
+                clockTick() {
                     const now = new Date();
                     this.waktuSekarang = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':');
-                    
                     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
                     this.tanggalIndo = now.toLocaleDateString('id-ID', options);
                 },
 
                 async fetchData() {
-                    try {
-                        const response = await fetch('/api-proxy/imsakiyah', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ "provinsi": "Jawa Timur", "kabkota": "Kab. Pamekasan" })
-                        });
-                        const res = await response.json();
-                        if (res.code === 200) {
-                            const today = new Date().getDate();
-                            const d = res.data.find(x => parseInt(x.tanggal) === today) || res.data[0];
-                            this.jadwal = d;
-                            this.listSholat = {
-                                imsak: d.imsak,
-                                subuh: d.subuh,
-                                dzuhur: d.dzuhur,
-                                ashar: d.ashar,
-                                isya: d.isya
-                            };
-                            this.loading = false;
-                        }
-                    } catch (e) {
-                        console.error("Gagal ambil data");
-                    }
-                },
+                    const bodyData = JSON.stringify({
+                        "provinsi": "Jawa Timur",
+                        "kabkota": "Kab. Pamekasan"
+                    });
 
-                cekAktif(nama) {
-                    // Logika sederhana untuk highlight waktu sholat yang sedang aktif
-                    // Bisa dikembangkan dengan membandingkan jam sekarang dengan jam jadwal
-                    return false; 
+                    // Daftar URL: 1. Netlify Proxy (Internal), 2. Public Proxy (Fallback)
+                    const endpoints = [
+                        '/api-proxy/imsakiyah',
+                        'https://corsproxy.io/?https://equran.id/api/v2/imsakiyah'
+                    ];
+
+                    for (let url of endpoints) {
+                        try {
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: bodyData
+                            });
+
+                            if (!response.ok) throw new Error();
+
+                            const res = await response.json();
+                            if (res.code === 200) {
+                                const today = new Date().getDate();
+                                const d = res.data.find(x => parseInt(x.tanggal) === today) || res.data[0];
+                                
+                                this.jadwal = d;
+                                this.listSholat = {
+                                    imsak: d.imsak,
+                                    subuh: d.subuh,
+                                    dzuhur: d.dzuhur,
+                                    ashar: d.ashar,
+                                    isya: d.isya
+                                };
+                                
+                                setTimeout(() => { this.loading = false; }, 1000);
+                                return; // Berhasil, keluar dari loop
+                            }
+                        } catch (e) {
+                            console.warn("Mencoba jalur cadangan...");
+                        }
+                    }
+
+                    this.statusMsg = "KONEKSI BERMASALAH. REFRESH HALAMAN.";
                 }
             }
         }

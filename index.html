@@ -254,11 +254,11 @@
         <div id="cd-boxes" class="flex items-center justify-center gap-2 mt-3"></div>
       </div>
 
-      <!-- imsak -->
+      <!-- subuh -->
       <div class="card fu" style="padding:16px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <span class="chip cb mb-2" style="display:inline-block">🌑 IMSAK</span>
+        <span class="chip cb mb-2" style="display:inline-block">🌄 SUBUH</span>
         <p id="imsak-val" class="big-val" style="color:#72c8ff">—</p>
-        <p class="text-xs mt-1.5" style="color:var(--muted)">Sahur berakhir</p>
+        <p class="text-xs mt-1.5" style="color:var(--muted)">Waktu Subuh</p>
       </div>
 
       <!-- buka -->
@@ -424,7 +424,7 @@ async function postFallback(url, body){
 }
 
 function renderImsakBuka(){
-  document.getElementById('imsak-val').textContent = todayEntry?.imsak || '—';
+  document.getElementById('imsak-val').textContent = todayEntry?.subuh || '—';
   document.getElementById('buka-val').textContent  = todayEntry?.maghrib || '—';
 
   const ramDay = getRamadhanDay();

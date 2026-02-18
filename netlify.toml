@@ -1,10 +1,5 @@
 [[redirects]]
-  from = "/api-jadwal/*"
+  from = "/api-proxy/*"
   to = "https://equran.id/api/v2/:splat"
   status = 200
   force = true
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"

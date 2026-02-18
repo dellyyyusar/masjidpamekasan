@@ -1,73 +1,558 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Sholat Pamekasan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; overflow: hidden; }
-        [x-cloak] { display: none !important; }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Imsakiyah Pamekasan — Ramadhan 1447H</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#070E1A;
+    --p1:#0B1826;
+    --p2:#0F2035;
+    --gold:#C8A84B;
+    --gold2:#EDD270;
+    --orange:#F5A623;
+    --border:rgba(200,168,75,0.18);
+    --muted:#4A7494;
+    --text:#C0D8EE;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{
+    width:100%;height:100%;
+    font-family:'DM Sans',sans-serif;
+    background:var(--ink);
+    color:var(--text);
+    overflow:hidden;
+  }
+  @media(max-width:640px){
+    html,body{overflow:auto}
+  }
+
+  /* ─── GRID LAYOUT ─── */
+  #app{
+    width:100vw; height:100vh;
+    display:grid;
+    /* left col bigger (info) | right col smaller (calendar) */
+    grid-template-columns: 1.7fr 1fr;
+    grid-template-rows: 58px 1fr;
+    grid-template-areas:
+      "hdr hdr"
+      "left right";
+    gap:8px;
+    padding:8px;
+  }
+  @media(max-width:640px){
+    #app{
+      height:auto; min-height:100vh;
+      grid-template-columns:1fr;
+      grid-template-rows:auto;
+      grid-template-areas:"hdr" "left" "right";
+    }
+    #right{min-height:280px}
+  }
+
+  /* bg */
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 55% 40% at 10% 5%,rgba(200,168,75,.07) 0%,transparent 55%),
+      radial-gradient(ellipse 40% 35% at 90% 95%,rgba(15,32,53,.8) 0%,transparent 55%);
+  }
+
+  /* stars */
+  @keyframes tw{0%,100%{opacity:.05}50%{opacity:.5}}
+  .star{position:fixed;border-radius:50%;background:#fff;pointer-events:none;z-index:0;
+    animation:tw var(--d,3s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+
+  /* card */
+  .card{background:var(--p1);border:1px solid var(--border);border-radius:12px;
+    position:relative;z-index:1;overflow:hidden;}
+  .card::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(135deg,rgba(200,168,75,.03) 0%,transparent 50%);}
+
+  /* ─── HEADER ─── */
+  #hdr{
+    grid-area:hdr;
+    background:linear-gradient(100deg,#060E1A,#0D1C30,#060E1A);
+    border:1px solid var(--border); border-radius:12px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px; position:relative;overflow:hidden;z-index:1;
+  }
+  #hdr::before{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 80% 200% at 50% -60%,rgba(200,168,75,.1) 0%,transparent 60%);}
+  .dome{position:absolute;bottom:0;left:50%;transform:translateX(-50%);opacity:.06;pointer-events:none}
+
+  /* ─── LEFT ─── */
+  #left{
+    grid-area:left;
+    display:grid;
+    grid-template-rows: auto auto 1fr;
+    gap:8px;
+    overflow:hidden; position:relative;z-index:1;
+  }
+
+  /* ─── RIGHT (calendar only) ─── */
+  #right{
+    grid-area:right;
+    display:flex;flex-direction:column;
+    overflow:hidden; position:relative;z-index:1;
+  }
+
+  /* ── countdown ── */
+  .cd-box{background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.22);
+    border-radius:10px;min-width:52px;text-align:center;padding:6px 10px;}
+  .cd-num{font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:var(--gold2);line-height:1}
+  .cd-lbl{font-size:8px;color:var(--muted);margin-top:2px;letter-spacing:.05em;text-transform:uppercase}
+  @keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.8)}}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--gold2);display:inline-block;animation:pd 2s infinite}
+
+  /* ── imsak/buka big ── */
+  .big-val{font-family:'Amiri',serif;font-size:2.6rem;line-height:1;font-weight:700}
+
+  /* ── prayer rows ── */
+  .pr{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    border-left:3px solid transparent;
+    transition:background .15s,border-color .15s;
+    flex:1;
+  }
+  .pr:last-child{border-bottom:none}
+  .pr.now{background:rgba(200,168,75,.1);border-left-color:var(--gold)}
+  .pr-time{font-family:'Amiri',serif;font-size:1.25rem;font-weight:700;color:var(--gold2)}
+
+  /* ─── CALENDAR (compact) ─── */
+  .kal-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+  .kal-scroll::-webkit-scrollbar{width:2px}
+  .kal-scroll::-webkit-scrollbar-track{background:transparent}
+  .kal-scroll::-webkit-scrollbar-thumb{background:#1a3550;border-radius:2px}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{
+    padding:5px 3px;
+    text-align:center;font-size:8px;text-transform:uppercase;
+    letter-spacing:.06em;color:var(--muted);font-weight:700;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    position:sticky;top:0;background:var(--p1);z-index:2;
+  }
+  thead th:first-child{text-align:left;padding-left:8px}
+  tbody td{
+    padding:4px 3px;
+    text-align:center;font-size:10px;
+    border-bottom:1px solid rgba(255,255,255,.03);
+  }
+  tbody td:first-child{text-align:left;padding-left:8px;font-weight:600}
+  tbody tr:last-child td{border-bottom:none}
+  .tr-t td{background:rgba(200,168,75,.1)}
+  .tr-t td:first-child{color:var(--gold2)}
+
+  /* chips */
+  .chip{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:20px}
+  .cg{background:rgba(200,168,75,.1);color:var(--gold2);border:1px solid rgba(200,168,75,.22)}
+  .cb{background:rgba(80,170,255,.1);color:#72c8ff;border:1px solid rgba(80,170,255,.2)}
+  .co{background:rgba(255,150,50,.1);color:#ffaa55;border:1px solid rgba(255,150,50,.2)}
+  .cr{background:rgba(255,100,100,.1);color:#ff8888;border:1px solid rgba(255,100,100,.2)}
+
+  .slabel{font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+
+  /* shimmer */
+  @keyframes sh{0%{background-position:-500px 0}100%{background-position:500px 0}}
+  .shimmer{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.03) 75%);
+    background-size:500px 100%;animation:sh 1.3s infinite;border-radius:10px}
+
+  @keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .fu{animation:fu .4s ease forwards}
+
+  .btn{background:linear-gradient(135deg,#8a6010,var(--gold2));color:var(--ink);font-weight:700;
+    border:none;border-radius:8px;padding:9px 22px;cursor:pointer;font-family:'DM Sans',sans-serif;
+    font-size:13px;transition:opacity .2s,transform .12s}
+  .btn:hover{opacity:.88;transform:translateY(-1px)}
+</style>
 </head>
-<body class="text-white min-h-screen flex items-center justify-center" x-data="app()" x-init="start()">
-    <div x-show="loading" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center">
-        <div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-emerald-500 font-bold animate-pulse text-xs tracking-widest uppercase">Sinkronisasi Server...</p>
+<body>
+
+<div id="stars"></div>
+
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
+  <div id="hdr">
+    <svg class="dome" width="360" height="58" viewBox="0 0 360 58">
+      <path d="M10 58 Q180 -6 350 58" stroke="#C8A84B" stroke-width="1.8" fill="none"/>
+      <path d="M65 58 Q180 16 295 58" stroke="#C8A84B" stroke-width="1" fill="none"/>
+      <rect x="173" y="0" width="14" height="22" rx="2" fill="#C8A84B" opacity=".8"/>
+      <polygon points="180,0 173,10 187,10" fill="#C8A84B" opacity=".8"/>
+    </svg>
+
+    <div class="flex items-center gap-3 relative">
+      <div style="filter:drop-shadow(0 0 8px rgba(200,168,75,.45));flex-shrink:0">
+        <svg width="38" height="38" viewBox="0 0 38 38">
+          <circle cx="19" cy="19" r="13" fill="rgba(200,168,75,.12)" stroke="rgba(200,168,75,.45)" stroke-width="1.1"/>
+          <circle cx="24" cy="14" r="11.5" fill="#060E1A"/>
+          <circle cx="19" cy="19" r="2.2" fill="#C8A84B"/>
+          <polygon points="30,8 31.3,12.5 35.5,12.5 32.2,15 33.5,19.5 30,17 26.5,19.5 27.8,15 24.5,12.5 28.7,12.5" fill="#EDD270" opacity=".9"/>
+        </svg>
+      </div>
+      <div>
+        <p class="amiri text-xl leading-tight relative" style="color:var(--gold2)">إمساكية رمضان ١٤٤٧ ه‍</p>
+        <div class="flex gap-1.5 mt-1 flex-wrap">
+          <span class="chip cg">📍 Kab. Pamekasan · Jawa Timur</span>
+          <span id="hijri-chip" class="chip cb hidden"></span>
+          <span class="chip cr">1 Ramadhan = 19 Feb 2026</span>
+        </div>
+      </div>
     </div>
-    <div class="w-full h-screen p-12 flex flex-col justify-between" x-cloak x-show="!loading">
-        <div class="flex justify-between items-start">
-            <div>
-                <h1 class="text-5xl font-extrabold text-emerald-400 italic tracking-tighter">MASJID PAMEKASAN</h1>
-                <p class="text-xl text-slate-400 mt-1" x-text="tanggal"></p>
-            </div>
-            <div class="text-right">
-                <div class="text-8xl font-black tabular-nums tracking-tighter" x-text="jam">00:00:00</div>
-                <p class="text-emerald-500 font-bold tracking-widest text-xs uppercase">WIB</p>
-            </div>
-        </div>
-        <div class="flex flex-col items-center justify-center flex-grow">
-            <div class="bg-white/5 border border-white/10 p-16 rounded-[4rem] text-center shadow-2xl">
-                <p class="text-slate-500 uppercase tracking-[0.4em] font-bold mb-4 text-sm">Maghrib (Buka Puasa)</p>
-                <h2 class="text-[14rem] leading-none font-black text-emerald-400 tabular-nums" x-text="data.maghrib">--:--</h2>
-            </div>
-        </div>
-        <div class="grid grid-cols-5 gap-6">
-            <template x-for="(v, k) in list">
-                <div class="bg-white/5 border border-white/5 p-8 rounded-3xl text-center">
-                    <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest" x-text="k"></p>
-                    <p class="text-4xl font-bold" x-text="v">--:--</p>
-                </div>
-            </template>
-        </div>
+
+    <p id="hdr-status" class="text-xs relative hidden sm:block" style="color:var(--muted)"></p>
+
+    <div class="text-right relative">
+      <p id="clock-time" class="amiri text-2xl leading-tight" style="color:var(--gold2)"></p>
+      <p id="clock-date" class="text-xs mt-0.5" style="color:var(--muted)"></p>
     </div>
-    <script>
-        function app() {
-            return {
-                loading: true, jam: '00:00:00', tanggal: '', data: {}, list: {},
-                start() {
-                    setInterval(() => {
-                        const n = new Date();
-                        this.jam = n.toLocaleTimeString('id-ID', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'}).replace(/\./g,':');
-                        this.tanggal = n.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-                    }, 1000);
-                    this.getData();
-                },
-                async getData() {
-                    try {
-                        const res = await fetch('/.netlify/functions/get-jadwal');
-                        const json = await res.json();
-                        const today = new Date().getDate();
-                        const d = json.data.find(x => parseInt(x.tanggal) === today) || json.data[0];
-                        this.data = d;
-                        this.list = { imsak: d.imsak, subuh: d.subuh, dzuhur: d.dzuhur, ashar: d.ashar, isya: d.isya };
-                        this.loading = false;
-                    } catch (e) { console.error("Error:", e); }
-                }
-            }
-        }
-    </script>
+  </div>
+
+  <!-- ══ LEFT ══ -->
+  <div id="left">
+
+    <!-- loaders -->
+    <div id="ll" class="space-y-2" style="grid-row:1/-1">
+      <div class="shimmer h-20"></div>
+      <div class="shimmer h-20"></div>
+      <div class="shimmer" style="height:300px"></div>
+    </div>
+
+    <!-- ROW 1: countdown + imsak/buka -->
+    <div id="top-row" class="hidden fu" style="display:none;grid-row:1">
+      <div class="grid gap-3" style="grid-template-columns:1fr 1fr 1fr">
+
+        <!-- countdown -->
+        <div class="card p-4 col-span-1" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div class="flex items-center gap-1.5 mb-2">
+              <span class="dot"></span>
+              <span class="slabel">Waktu Berikutnya</span>
+            </div>
+            <p id="cd-name" class="amiri text-xl font-bold leading-tight" style="color:var(--gold2)"></p>
+            <p id="cd-time" class="text-xs mt-1" style="color:var(--muted)"></p>
+          </div>
+          <div id="cd-boxes" class="flex items-center gap-1.5 mt-3"></div>
+        </div>
+
+        <!-- imsak -->
+        <div class="card p-4 text-center">
+          <span class="chip cb mb-2 block">🌑 IMSAK</span>
+          <p id="imsak-val" class="big-val" style="color:#72c8ff">—</p>
+          <p class="text-xs mt-1.5" style="color:var(--muted)">Sahur berakhir</p>
+        </div>
+
+        <!-- buka -->
+        <div class="card p-4 text-center">
+          <span class="chip co mb-2 block">🌇 BUKA PUASA</span>
+          <p id="buka-val" class="big-val" style="color:#ffaa55">—</p>
+          <p class="text-xs mt-1.5" style="color:var(--muted)">Waktu Maghrib</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ROW 2: jadwal sholat (fills remaining height) -->
+    <div id="sholat-wrap" class="card hidden fu" style="display:none;flex:1;overflow:hidden;display:flex;flex-direction:column">
+      <div class="slabel px-4 pt-3 pb-1.5 flex-shrink-0 flex items-center justify-between">
+        <span>Jadwal Sholat Hari Ini</span>
+        <span id="today-label" class="text-xs" style="color:var(--muted)"></span>
+      </div>
+      <div id="sholat-list" style="flex:1;display:flex;flex-direction:column;overflow:hidden"></div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- ══ RIGHT (compact calendar) ══ -->
+  <div id="right">
+
+    <div id="lr" class="shimmer" style="flex:1;min-height:200px"></div>
+
+    <div id="kal-wrap" class="card hidden fu" style="display:none;flex:1;display:flex;flex-direction:column;overflow:hidden">
+
+      <!-- header -->
+      <div class="px-3 pt-2.5 pb-1.5 flex-shrink-0 border-b" style="border-color:rgba(255,255,255,.06)">
+        <p class="slabel">📅 Kalender Imsakiyah · Ramadhan 1447 H</p>
+        <p class="text-xs mt-0.5" style="color:var(--muted)">1 Ramadhan = Kamis, 19 Feb 2026 · <span id="kal-info"></span></p>
+      </div>
+
+      <!-- table -->
+      <div class="kal-scroll" id="kal-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left;padding-left:8px">Tgl · Date</th>
+              <th style="color:#72c8ff">Imsak</th>
+              <th>Subuh</th>
+              <th>Dzuhur</th>
+              <th>Ashar</th>
+              <th style="color:#ffaa55">Maghrib</th>
+              <th>Isya</th>
+            </tr>
+          </thead>
+          <tbody id="kal-body"></tbody>
+        </table>
+      </div>
+
+      <div class="px-3 py-1.5 flex-shrink-0 border-t" style="border-color:rgba(255,255,255,.04)">
+        <p class="text-center" style="font-size:8.5px;color:#1a3550">equran.id · Kementerian Agama RI</p>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+
+  <!-- error -->
+  <div id="err" class="hidden" style="grid-column:1/-1;grid-row:2;display:none;align-items:center;justify-content:center;z-index:10">
+    <div class="card p-8 text-center">
+      <p class="text-4xl mb-3">⚠️</p>
+      <p id="err-msg" class="text-sm mb-4" style="color:var(--muted)"></p>
+      <button class="btn" onclick="boot()">🔄 Coba Lagi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* Stars */
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<50;i++){
+    const el=document.createElement('div');el.className='star';
+    const s=Math.random()*1.4+.3;
+    el.style.cssText=`width:${s}px;height:${s}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2.5+Math.random()*4}s;--dl:${Math.random()*5}s`;
+    c.appendChild(el);
+  }
+})();
+
+const API  = 'https://equran.id/api/v2/imsakiyah';
+const PROV = 'Jawa Timur';
+const KAB  = 'Kab. Pamekasan';
+
+// 1 Ramadhan 1447H = 19 Februari 2026
+const RAMADHAN_START = new Date(2026, 1, 19); // month is 0-indexed
+
+const ROWS=[
+  {key:'imsak',  label:'Imsak',  icon:'🌑', c:'#72c8ff'},
+  {key:'subuh',  label:'Subuh',  icon:'🌄', c:'#9ad0f0'},
+  {key:'terbit', label:'Terbit', icon:'🌅', c:'#80b8ce'},
+  {key:'dhuha',  label:'Dhuha',  icon:'☀️',  c:'#a0c4d4'},
+  {key:'dzuhur', label:'Dzuhur', icon:'🕛', c:'#b8d4e4'},
+  {key:'ashar',  label:'Ashar',  icon:'🌤️', c:'#a8c4d4'},
+  {key:'maghrib',label:'Maghrib',icon:'🌇', c:'#ffaa55'},
+  {key:'isya',   label:'Isya',   icon:'🌙', c:'#b0cce0'},
+];
+const CD_KEYS=['imsak','subuh','dzuhur','ashar','maghrib','isya'];
+const CD_LBL={imsak:'🌑 Imsak',subuh:'🌄 Subuh',dzuhur:'🕛 Dzuhur',ashar:'🌤️ Ashar',maghrib:'🌇 Maghrib',isya:'🌙 Isya'};
+
+// Month name mapping
+const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const DAYS_ID=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+
+let imsakData=[], todayEntry=null, cdTimer=null;
+
+/* Get the Gregorian date for Ramadhan day N (1-indexed) */
+function getGregorianDate(ramadhanDay){
+  const d = new Date(RAMADHAN_START);
+  d.setDate(d.getDate() + (ramadhanDay - 1));
+  return d;
+}
+
+/* Format: "19 Feb" */
+function fmtShort(d){
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
+/* What Ramadhan day is today? */
+function getRamadhanDay(){
+  const now = new Date();
+  const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startMidnight = new Date(RAMADHAN_START.getFullYear(), RAMADHAN_START.getMonth(), RAMADHAN_START.getDate());
+  const diff = Math.round((nowMidnight - startMidnight) / 86400000) + 1;
+  return diff; // will be 1 on 19 Feb, 2 on 20 Feb, etc.
+}
+
+async function boot(){
+  setStatus('Memuat data equran.id...');
+  showLoad(true); hideErr();
+  startClock();
+
+  try{
+    const data = await postFallback(API, {provinsi:PROV, kabkota:KAB});
+    if(!data || data.code!==200) throw new Error(data?.message || 'Data tidak tersedia');
+    imsakData = data.data?.imsakiyah || [];
+    if(!imsakData.length) throw new Error('Data jadwal kosong untuk Pamekasan');
+
+    if(data.data?.hijriah){
+      const ch = document.getElementById('hijri-chip');
+      ch.textContent = '🗓️ Ramadhan ' + data.data.hijriah + ' H / 2026 M';
+      ch.classList.remove('hidden');
+    }
+
+    // Find today's entry by Ramadhan day number
+    const ramDay = getRamadhanDay();
+    // API returns tanggal as the Ramadhan day number (1,2,3...)
+    todayEntry = imsakData.find(d => d.tanggal === ramDay) || imsakData[0];
+
+    renderImsakBuka();
+    renderSholat();
+    renderKalender();
+    startCountdown();
+    showLoad(false);
+    setStatus('equran.id · Kemenag RI · Data valid');
+  }catch(e){
+    showLoad(false);
+    showErr(e.message || 'Gagal memuat data. Periksa koneksi internet.');
+    setStatus('⚠️ Gagal memuat');
+  }
+}
+
+async function postFallback(url, body){
+  const opts = {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)};
+  const fns = [
+    ()=>fetch(url, opts),
+    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(url), {...opts, headers:{...opts.headers,'x-requested-with':'XMLHttpRequest'}}),
+    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url), opts),
+  ];
+  for(const fn of fns){ try{ const r=await fn(); if(r.ok) return await r.json(); }catch(_){} }
+  throw new Error('Semua jalur koneksi ke equran.id gagal.');
+}
+
+function renderImsakBuka(){
+  document.getElementById('imsak-val').textContent = todayEntry?.imsak || '—';
+  document.getElementById('buka-val').textContent  = todayEntry?.maghrib || '—';
+
+  const ramDay = getRamadhanDay();
+  const gregDate = getGregorianDate(ramDay);
+  document.getElementById('today-label').textContent =
+    `${DAYS_ID[gregDate.getDay()]}, ${fmtShort(gregDate)} · Ramadhan ke-${ramDay}`;
+
+  show('top-row'); show('sholat-wrap');
+}
+
+function renderSholat(){
+  const list = document.getElementById('sholat-list');
+  list.innerHTML = ROWS.map(r => `
+    <div class="pr" id="pr-${r.key}">
+      <div class="flex items-center gap-2.5">
+        <span style="font-size:1.1rem;width:26px;text-align:center">${r.icon}</span>
+        <span style="font-size:13px;font-weight:600;color:${r.c}">${r.label}</span>
+      </div>
+      <span class="pr-time">${todayEntry?.[r.key] || '—'}</span>
+    </div>`).join('');
+}
+
+function renderKalender(){
+  const ramDay = getRamadhanDay();
+  document.getElementById('kal-info').textContent = imsakData.length + ' hari';
+
+  document.getElementById('kal-body').innerHTML = imsakData.map(e => {
+    const isT = e.tanggal === ramDay;
+    const gregDate = getGregorianDate(e.tanggal);
+    const gregLabel = fmtShort(gregDate);
+    return `<tr class="${isT ? 'tr-t' : ''}">
+      <td>
+        <span class="font-bold">${e.tanggal}</span>
+        <span style="color:var(--muted);font-size:9px;margin-left:3px">${gregLabel}</span>
+        ${isT ? '<span style="color:var(--gold2);font-size:9px"> ◀</span>' : ''}
+      </td>
+      <td style="color:#72c8ff">${e.imsak||'—'}</td>
+      <td>${e.subuh||'—'}</td>
+      <td>${e.dzuhur||'—'}</td>
+      <td>${e.ashar||'—'}</td>
+      <td style="color:#ffaa55">${e.maghrib||'—'}</td>
+      <td>${e.isya||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  show('kal-wrap');
+
+  setTimeout(()=>{
+    const row = document.querySelector('.tr-t');
+    if(row){
+      const scroll = document.getElementById('kal-scroll');
+      scroll.scrollTop = row.offsetTop - scroll.offsetHeight/2 + row.offsetHeight/2;
+    }
+  },300);
+}
+
+function startCountdown(){
+  if(cdTimer) clearInterval(cdTimer);
+  if(!todayEntry) return;
+
+  function tick(){
+    const now = new Date();
+    const upcoming = CD_KEYS.map(k=>{
+      const t = todayEntry[k]; if(!t) return null;
+      const[h,m] = t.split(':').map(Number);
+      const dt = new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
+      return dt > now ? {k,dt,t} : null;
+    }).filter(Boolean);
+
+    const card = document.getElementById('top-row');
+    if(!upcoming.length){
+      document.getElementById('cd-name').textContent = 'Selesai hari ini';
+      document.getElementById('cd-time').textContent = '';
+      document.getElementById('cd-boxes').innerHTML = '';
+      return;
+    }
+    const next = upcoming[0];
+    document.getElementById('cd-name').textContent = CD_LBL[next.k] || next.k;
+    document.getElementById('cd-time').textContent = next.t + ' WIB';
+
+    const diff = Math.floor((next.dt - now) / 1000);
+    const h=Math.floor(diff/3600), m=Math.floor((diff%3600)/60), s=diff%60;
+    document.getElementById('cd-boxes').innerHTML =
+      `<div class="cd-box"><div class="cd-num">${pad(h)}</div><div class="cd-lbl">Jam</div></div>
+       <span style="color:var(--muted);padding-bottom:18px;font-size:1.1rem">:</span>
+       <div class="cd-box"><div class="cd-num">${pad(m)}</div><div class="cd-lbl">Mnt</div></div>
+       <span style="color:var(--muted);padding-bottom:18px;font-size:1.1rem">:</span>
+       <div class="cd-box"><div class="cd-num">${pad(s)}</div><div class="cd-lbl">Dtk</div></div>`;
+
+    document.querySelectorAll('.pr').forEach(r=>r.classList.remove('now'));
+    document.getElementById('pr-'+next.k)?.classList.add('now');
+  }
+  tick(); cdTimer = setInterval(tick, 1000);
+}
+
+function startClock(){
+  if(window._ck) clearInterval(window._ck);
+  function tick(){
+    const n = new Date();
+    document.getElementById('clock-time').textContent = n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('clock-date').textContent = n.toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  }
+  tick(); window._ck = setInterval(tick, 1000);
+}
+
+function showLoad(v){
+  document.getElementById('ll').style.display = v ? '' : 'none';
+  document.getElementById('lr').style.display = v ? '' : 'none';
+}
+function show(id){
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.display = id==='top-row' ? '' : id==='sholat-wrap' ? 'flex' : id==='kal-wrap' ? 'flex' : '';
+}
+function showErr(msg){
+  document.getElementById('err-msg').textContent = msg;
+  const e = document.getElementById('err');
+  e.classList.remove('hidden'); e.style.display = 'flex';
+}
+function hideErr(){
+  const e = document.getElementById('err');
+  e.classList.add('hidden'); e.style.display = 'none';
+}
+function setStatus(t){ document.getElementById('hdr-status').textContent = t; }
+function pad(n){ return String(n).padStart(2,'0'); }
+
+boot();
+</script>
 </body>
 </html>

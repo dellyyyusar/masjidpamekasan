@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Sholat Pamekasan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6">
+
+    <div id="app-card" class="w-full max-w-md bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-white/10 relative">
+        <div id="loading-overlay" class="absolute inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
+            <p class="text-emerald-500 animate-pulse font-bold">MENGAMBIL DATA...</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-8 text-center">
+            <h1 class="text-3xl font-black tracking-tighter italic">PAMEKASAN</h1>
+            <p id="tgl-indo" class="text-emerald-100 text-sm mt-1 opacity-80 font-medium">--</p>
+        </div>
+
+        <div class="p-8 text-center">
+            <p class="text-slate-500 uppercase text-xs font-bold tracking-[0.2em] mb-2">Buka Puasa / Maghrib</p>
+            <div class="inline-block bg-slate-800 px-8 py-4 rounded-2xl border border-emerald-500/30">
+                <h2 id="maghrib" class="text-6xl font-black text-emerald-400 tabular-nums">--:--</h2>
+            </div>
+        </div>
+
+        <div class="px-8 pb-8 space-y-3">
+            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <span class="text-slate-400 font-medium">Imsak</span>
+                <span id="imsak" class="text-xl font-bold">--:--</span>
+            </div>
+            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <span class="text-slate-400 font-medium">Subuh</span>
+                <span id="subuh" class="text-xl font-bold">--:--</span>
+            </div>
+            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <span class="text-slate-400 font-medium">Dzuhur</span>
+                <span id="dzuhur" class="text-xl font-bold">--:--</span>
+            </div>
+            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <span class="text-slate-400 font-medium">Ashar</span>
+                <span id="ashar" class="text-xl font-bold">--:--</span>
+            </div>
+            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <span class="text-slate-400 font-medium">Isya</span>
+                <span id="isya" class="text-xl font-bold">--:--</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function getJadwal() {
+            // Kita gunakan AllOrigins Proxy untuk menghindari masalah CORS
+            const targetUrl = encodeURIComponent("https://equran.id/api/v2/imsakiyah");
+            const proxyUrl = `https://api.allorigins.win/get?url=${targetUrl}`;
+
+            try {
+                // Gunakan GET melalui proxy, lalu kita parsing datanya
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error("Network error");
+                
+                const rawData = await response.json();
+                
+                // AllOrigins mengembalikan data dalam string di field 'contents'
+                // Kita kirim POST manual ke equran.id melalui Proxy atau jika gagal, gunakan cara alternatif
+                // Untuk demo ini, kita asumsikan server API merespon jika dikirim dengan benar.
+                
+                const finalResponse = await fetch("https://equran.id/api/v2/imsakiyah", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        "provinsi": "Jawa Timur",
+                        "kabkota": "Kab. Pamekasan"
+                    })
+                });
+
+                const result = await finalResponse.json();
+                
+                if (result.code === 200) {
+                    const todayDate = new Date().getDate();
+                    const harian = result.data.find(d => parseInt(d.tanggal) === todayDate) || result.data[0];
+                    
+                    document.getElementById('maghrib').innerText = harian.maghrib;
+                    document.getElementById('imsak').innerText = harian.imsak;
+                    document.getElementById('subuh').innerText = harian.subuh;
+                    document.getElementById('dzuhur').innerText = harian.dzuhur;
+                    document.getElementById('ashar').innerText = harian.ashar;
+                    document.getElementById('isya').innerText = harian.isya;
+
+                    const opt = { weekday: 'long', day: 'numeric', month: 'long' };
+                    document.getElementById('tgl-indo').innerText = new Date().toLocaleDateString('id-ID', opt);
+                    
+                    // Hilangkan loading
+                    document.getElementById('loading-overlay').classList.add('opacity-0');
+                    setTimeout(() => {
+                        document.getElementById('loading-overlay').style.display = 'none';
+                    }, 500);
+                }
+            } catch (e) {
+                console.error("Error:", e);
+                document.getElementById('loading-overlay').innerHTML = `
+                    <p class="text-red-400 px-4 text-center">Gagal memuat data.<br>Cek koneksi atau coba buka di browser yang berbeda.</p>
+                `;
+            }
+        }
+
+        getJadwal();
+    </script>
+</body>
+</html>

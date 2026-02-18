@@ -3,75 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Sholat Pamekasan</title>
+    <title>Dashboard Masjid - Pamekasan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
-        body { font-family: 'Outfit', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden; /* Mencegah scroll di laptop */
+        }
+        .bg-mesh {
+            background-color: #020617;
+            background-image: radial-gradient(at 0% 0%, hsla(161, 72%, 19%, 1) 0, transparent 50%), 
+                              radial-gradient(at 100% 100%, hsla(158, 82%, 15%, 1) 0, transparent 50%);
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6">
+<body class="bg-mesh text-white min-h-screen flex items-center justify-center p-0">
 
-    <div id="app-card" class="w-full max-w-md bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-white/10 relative">
-        <div id="loading-overlay" class="absolute inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center transition-opacity duration-500">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-            <p class="text-emerald-500 animate-pulse font-bold">MENGAMBIL DATA...</p>
-        </div>
-
-        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 p-8 text-center">
-            <h1 class="text-3xl font-black tracking-tighter italic">PAMEKASAN</h1>
-            <p id="tgl-indo" class="text-emerald-100 text-sm mt-1 opacity-80 font-medium">--</p>
-        </div>
-
-        <div class="p-8 text-center">
-            <p class="text-slate-500 uppercase text-xs font-bold tracking-[0.2em] mb-2">Buka Puasa / Maghrib</p>
-            <div class="inline-block bg-slate-800 px-8 py-4 rounded-2xl border border-emerald-500/30">
-                <h2 id="maghrib" class="text-6xl font-black text-emerald-400 tabular-nums">--:--</h2>
+    <div class="w-full h-screen flex flex-col p-8 lg:p-12 justify-between relative">
+        
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tighter text-emerald-400">PAMEKASAN</h1>
+                <p id="tgl-indo" class="text-xl text-slate-400 mt-2 italic font-medium">Memuat tanggal...</p>
+            </div>
+            <div class="text-right">
+                <div id="live-clock" class="text-6xl lg:text-7xl font-black tabular-nums tracking-tight">00:00:00</div>
+                <p class="text-emerald-500/80 font-bold tracking-widest text-sm">WAKTU INDONESIA BARAT</p>
             </div>
         </div>
 
-        <div class="px-8 pb-8 space-y-3">
-            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
-                <span class="text-slate-400 font-medium">Imsak</span>
-                <span id="imsak" class="text-xl font-bold">--:--</span>
+        <div class="flex flex-col items-center">
+            <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-10 lg:p-16 rounded-[3rem] shadow-2xl text-center transform transition hover:scale-105 duration-500">
+                <p class="text-slate-400 uppercase tracking-[0.5em] font-bold mb-4 text-sm lg:text-base">Waktu Berbuka Puasa (Maghrib)</p>
+                <h2 id="maghrib" class="text-[10rem] lg:text-[14rem] leading-none font-black text-transparent bg-clip-text bg-gradient-to-b from-emerald-400 to-teal-600 tabular-nums">--:--</h2>
             </div>
-            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
-                <span class="text-slate-400 font-medium">Subuh</span>
-                <span id="subuh" class="text-xl font-bold">--:--</span>
+        </div>
+
+        <div class="grid grid-cols-5 gap-6">
+            <div class="bg-white/5 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+                <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Imsak</p>
+                <p id="imsak" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
             </div>
-            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
-                <span class="text-slate-400 font-medium">Dzuhur</span>
-                <span id="dzuhur" class="text-xl font-bold">--:--</span>
+            <div class="bg-white/5 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+                <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Subuh</p>
+                <p id="subuh" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
             </div>
-            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
-                <span class="text-slate-400 font-medium">Ashar</span>
-                <span id="ashar" class="text-xl font-bold">--:--</span>
+            <div class="bg-white/5 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center border-b-4 border-b-emerald-500">
+                <p class="text-emerald-500 font-bold text-xs uppercase mb-2 tracking-widest">Dzuhur</p>
+                <p id="dzuhur" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
             </div>
-            <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
-                <span class="text-slate-400 font-medium">Isya</span>
-                <span id="isya" class="text-xl font-bold">--:--</span>
+            <div class="bg-white/5 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+                <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Ashar</p>
+                <p id="ashar" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
             </div>
+            <div class="bg-white/5 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+                <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Isya</p>
+                <p id="isya" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
+            </div>
+        </div>
+
+        <div id="loader" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center transition-opacity duration-1000">
+            <div class="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="mt-4 text-emerald-500 font-bold tracking-tighter">DATA SINKRON...</p>
         </div>
     </div>
 
     <script>
-        async function getJadwal() {
-            // Kita gunakan AllOrigins Proxy untuk menghindari masalah CORS
-            const targetUrl = encodeURIComponent("https://equran.id/api/v2/imsakiyah");
-            const proxyUrl = `https://api.allorigins.win/get?url=${targetUrl}`;
+        // Update Jam Setiap Detik
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('live-clock').innerText = time.replace(/\./g, ':');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
+        async function getJadwal() {
+            // Gunakan CORS Proxy untuk Vercel agar lancar
+            const apiUrl = "https://corsproxy.io/?https://equran.id/api/v2/imsakiyah";
+            
             try {
-                // Gunakan GET melalui proxy, lalu kita parsing datanya
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error("Network error");
-                
-                const rawData = await response.json();
-                
-                // AllOrigins mengembalikan data dalam string di field 'contents'
-                // Kita kirim POST manual ke equran.id melalui Proxy atau jika gagal, gunakan cara alternatif
-                // Untuk demo ini, kita asumsikan server API merespon jika dikirim dengan benar.
-                
-                const finalResponse = await fetch("https://equran.id/api/v2/imsakiyah", {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -80,7 +93,7 @@
                     })
                 });
 
-                const result = await finalResponse.json();
+                const result = await response.json();
                 
                 if (result.code === 200) {
                     const todayDate = new Date().getDate();
@@ -93,24 +106,23 @@
                     document.getElementById('ashar').innerText = harian.ashar;
                     document.getElementById('isya').innerText = harian.isya;
 
-                    const opt = { weekday: 'long', day: 'numeric', month: 'long' };
+                    const opt = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
                     document.getElementById('tgl-indo').innerText = new Date().toLocaleDateString('id-ID', opt);
                     
-                    // Hilangkan loading
-                    document.getElementById('loading-overlay').classList.add('opacity-0');
-                    setTimeout(() => {
-                        document.getElementById('loading-overlay').style.display = 'none';
-                    }, 500);
+                    // Hilangkan Loader
+                    const loader = document.getElementById('loader');
+                    loader.classList.add('opacity-0');
+                    setTimeout(() => loader.style.display = 'none', 1000);
                 }
             } catch (e) {
-                console.error("Error:", e);
-                document.getElementById('loading-overlay').innerHTML = `
-                    <p class="text-red-400 px-4 text-center">Gagal memuat data.<br>Cek koneksi atau coba buka di browser yang berbeda.</p>
-                `;
+                console.error("API Error");
+                document.getElementById('loader').innerHTML = "<p class='text-red-500'>Koneksi Internet Bermasalah</p>";
             }
         }
 
         getJadwal();
+        // Refresh data setiap 30 menit
+        setInterval(getJadwal, 1800000);
     </script>
 </body>
 </html>

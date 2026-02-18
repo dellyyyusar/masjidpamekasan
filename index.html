@@ -12,73 +12,83 @@
             background-image: radial-gradient(at 0% 0%, hsla(161, 72%, 19%, 1) 0, transparent 50%), 
                               radial-gradient(at 100% 100%, hsla(158, 82%, 15%, 1) 0, transparent 50%);
         }
+        .glow-active { box-shadow: 0 0 20px rgba(52, 211, 153, 0.4); border-color: rgba(52, 211, 153, 0.6); }
     </style>
 </head>
-<body class="bg-mesh text-white min-h-screen flex items-center justify-center p-0">
+<body class="bg-mesh text-white min-h-screen flex items-center justify-center">
 
     <div class="w-full h-screen flex flex-col p-8 lg:p-12 justify-between relative">
-        
         <div class="flex justify-between items-start">
             <div>
-                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tighter text-emerald-400">PAMEKASAN</h1>
-                <p id="tgl-indo" class="text-xl text-slate-400 mt-2 italic font-medium">Memuat tanggal...</p>
+                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tighter text-emerald-400 italic">MASJID PAMEKASAN</h1>
+                <p id="tgl-indo" class="text-xl text-slate-400 mt-2 font-medium italic">Memuat Tanggal...</p>
             </div>
             <div class="text-right">
-                <div id="live-clock" class="text-6xl lg:text-7xl font-black tabular-nums tracking-tight">00:00:00</div>
-                <p class="text-emerald-500/80 font-bold tracking-widest text-sm">WAKTU INDONESIA BARAT</p>
+                <div id="live-clock" class="text-6xl lg:text-8xl font-black tabular-nums tracking-tighter text-white leading-none">00:00:00</div>
+                <p class="text-emerald-500 font-bold tracking-[0.3em] text-xs mt-2">WAKTU INDONESIA BARAT</p>
             </div>
         </div>
 
         <div class="flex flex-col items-center">
-            <div class="bg-white/5 backdrop-blur-2xl border border-white/10 p-10 lg:p-16 rounded-[3rem] shadow-2xl text-center">
-                <p class="text-slate-400 uppercase tracking-[0.5em] font-bold mb-4 text-sm lg:text-base">Waktu Maghrib (Buka Puasa)</p>
-                <h2 id="maghrib" class="text-[10rem] lg:text-[14rem] leading-none font-black text-emerald-400 tabular-nums drop-shadow-2xl">--:--</h2>
+            <div class="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 lg:px-20 lg:py-14 rounded-[4rem] text-center shadow-2xl">
+                <p class="text-slate-400 uppercase tracking-[0.5em] font-bold mb-4 text-sm">Waktu Maghrib (Buka)</p>
+                <h2 id="maghrib" class="text-[12rem] lg:text-[15rem] leading-none font-black text-emerald-400 tabular-nums drop-shadow-2xl">--:--</h2>
             </div>
         </div>
 
         <div class="grid grid-cols-5 gap-6">
-            <div class="bg-black/40 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+            <div id="card-imsak" class="bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 text-center">
                 <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Imsak</p>
-                <p id="imsak" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
+                <p id="imsak" class="text-4xl font-bold tracking-tighter">--:--</p>
             </div>
-            <div class="bg-black/40 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+            <div id="card-subuh" class="bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 text-center">
                 <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Subuh</p>
-                <p id="subuh" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
+                <p id="subuh" class="text-4xl font-bold tracking-tighter">--:--</p>
             </div>
-            <div class="bg-emerald-500/20 backdrop-blur-md border border-emerald-500/20 p-6 rounded-3xl text-center border-b-4 border-emerald-500">
-                <p class="text-emerald-500 font-bold text-xs uppercase mb-2 tracking-widest text-emerald-400">Dzuhur</p>
-                <p id="dzuhur" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
+            <div id="card-dzuhur" class="bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 text-center">
+                <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Dzuhur</p>
+                <p id="dzuhur" class="text-4xl font-bold tracking-tighter">--:--</p>
             </div>
-            <div class="bg-black/40 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+            <div id="card-ashar" class="bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 text-center">
                 <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Ashar</p>
-                <p id="ashar" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
+                <p id="ashar" class="text-4xl font-bold tracking-tighter">--:--</p>
             </div>
-            <div class="bg-black/40 backdrop-blur-md border border-white/5 p-6 rounded-3xl text-center">
+            <div id="card-isya" class="bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 text-center">
                 <p class="text-slate-500 font-bold text-xs uppercase mb-2 tracking-widest">Isya</p>
-                <p id="isya" class="text-3xl lg:text-4xl font-bold tracking-tight">--:--</p>
+                <p id="isya" class="text-4xl font-bold tracking-tighter">--:--</p>
             </div>
         </div>
 
-        <div id="loader" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center transition-opacity duration-1000">
-            <div class="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-            <p class="mt-4 text-emerald-500 font-bold tracking-tighter">MENYINKRONKAN JADWAL...</p>
+        <div class="w-full bg-emerald-950/50 backdrop-blur-sm py-3 mt-4 overflow-hidden rounded-xl border border-emerald-500/20">
+            <div class="whitespace-nowrap animate-marquee flex gap-10">
+                <span class="text-emerald-400 font-bold italic">Luruskan dan rapatkan shaf...</span>
+                <span class="text-white font-medium italic">Matikan suara handphone selama di dalam masjid...</span>
+                <span class="text-emerald-400 font-bold italic">Infaq Jum'at terkumpul: Rp 2.500.000...</span>
+                <span class="text-white font-medium italic">Barangsiapa membangun masjid karena Allah, maka Allah akan membangunkan baginya rumah di surga...</span>
+            </div>
         </div>
     </div>
 
+    <div id="loader" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="w-14 h-14 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-emerald-500 font-bold text-xs tracking-[0.3em]">SINKRONISASI JADWAL</p>
+    </div>
+
     <script>
-        // Jam Real-time
+        // Real-time Clock
         function updateClock() {
             const now = new Date();
-            const time = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('live-clock').innerText = time.replace(/\./g, ':');
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString('id-ID', { 
+                hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' 
+            }).replace(/\./g, ':');
         }
         setInterval(updateClock, 1000);
         updateClock();
 
         async function getJadwal() {
             try {
-                // MEMANGGIL ENDPOINT LOKAL (DITERUSKAN OLEH NETLIFY)
-                const response = await fetch('/api-jadwal/imsakiyah', {
+                // Memanggil via Proxy Netlify (PENTING: Gunakan path /api-proxy/...)
+                const response = await fetch('/api-proxy/imsakiyah', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -87,13 +97,13 @@
                     })
                 });
 
-                if (!response.ok) throw new Error("API Offline");
+                if (!response.ok) throw new Error("CORS Blocked atau Proxy Gagal");
 
                 const result = await response.json();
                 
                 if (result.code === 200) {
-                    const today = new Date().getDate();
-                    const d = result.data.find(item => parseInt(item.tanggal) === today) || result.data[0];
+                    const todayDate = new Date().getDate();
+                    const d = result.data.find(item => parseInt(item.tanggal) === todayDate) || result.data[0];
                     
                     document.getElementById('maghrib').innerText = d.maghrib;
                     document.getElementById('imsak').innerText = d.imsak;
@@ -107,23 +117,32 @@
                     
                     const loader = document.getElementById('loader');
                     loader.classList.add('opacity-0');
-                    setTimeout(() => loader.style.display = 'none', 1000);
+                    setTimeout(() => loader.style.display = 'none', 700);
                 }
             } catch (e) {
-                console.error("Error:", e);
+                console.error("Fetch Error:", e);
                 document.getElementById('loader').innerHTML = `
-                    <div class="text-center">
-                        <p class="text-red-500 font-bold text-xl">GAGAL MEMUAT DATA</p>
-                        <p class="text-slate-400 mt-2">Pastikan file netlify.toml sudah ikut terupload.</p>
-                        <button onclick="location.reload()" class="mt-6 bg-emerald-600 px-6 py-2 rounded-full font-bold">Coba Lagi</button>
-                    </div>
-                `;
+                    <div class='text-center'>
+                        <p class='text-red-500 font-bold mb-4'>GAGAL MENGAMBIL DATA</p>
+                        <p class='text-slate-400 text-xs italic mb-6 uppercase tracking-widest'>Pastikan file netlify.toml berada di root</p>
+                        <button onclick="location.reload()" class='bg-emerald-600 px-6 py-2 rounded-full font-bold text-sm'>COBA LAGI</button>
+                    </div>`;
             }
         }
 
         getJadwal();
-        // Refresh setiap 1 jam
         setInterval(getJadwal, 3600000);
     </script>
+
+    <style>
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+    </style>
 </body>
 </html>

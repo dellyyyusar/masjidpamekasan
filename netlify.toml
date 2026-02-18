@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api-jadwal/*"
+  to = "https://equran.id/api/v2/:splat"
+  status = 200
+  force = true

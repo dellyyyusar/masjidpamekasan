@@ -210,9 +210,9 @@
       <div>
         <p class="amiri text-2xl leading-tight relative" style="color:var(--gold2);font-family:'Amiri',serif;font-size:1.5rem">إمساكية رمضان ١٤٤٧ ه‍</p>
         <div class="flex gap-2 mt-1.5 flex-wrap">
-          <span class="chip cg">📍 Kab. Pamekasan · Jawa Timur</span>
-          <span id="hijri-chip" class="chip cb hidden"></span>
-          <span class="chip cr">1 Ramadhan = 19 Feb 2026</span>
+          <span class="chip cg text-[12px]">📍 Kab. Pamekasan · Jawa Timur</span>
+          <span id="hijri-chip" class="chip cb hidden text-[12px]"></span>
+          <span class="chip cr text-[12px]">1 Ramadhan = 19 Feb 2026</span>
         </div>
       </div>
     </div>
@@ -252,16 +252,16 @@
 
       <!-- subuh -->
       <div class="card fu" style="padding:16px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <span class="chip cb mb-2" style="display:inline-block">🌄 SUBUH</span>
+        <span class="chip cb mb-2 text-[12px]" style="display:inline-block">🌄 SUBUH</span>
         <p id="imsak-val" class="big-val" style="color:#72c8ff">—</p>
-        <p class="text-xs mt-1.5" style="color:var(--muted)">Waktu Subuh</p>
+        <p class="text-[14px] mt-1.5" style="color:var(--muted)">Waktu Subuh</p>
       </div>
 
       <!-- buka -->
       <div class="card fu" style="padding:16px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <span class="chip co mb-2" style="display:inline-block">🌇 BUKA PUASA</span>
+        <span class="chip co mb-2 text-[12px]" style="display:inline-block">🌇 BUKA PUASA</span>
         <p id="buka-val" class="big-val" style="color:#ffaa55">—</p>
-        <p class="text-xs mt-1.5" style="color:var(--muted)">Waktu Maghrib</p>
+        <p class="text-[14px] mt-1.5" style="color:var(--muted)">Waktu Maghrib</p>
       </div>
 
     </div>
@@ -360,7 +360,7 @@ const ROWS=[
   {key:'isya',   label:'Isya',   icon:'🌙', c:'#b0cce0'},
 ];
 const CD_KEYS=['imsak','subuh','dzuhur','ashar','maghrib','isya'];
-const CD_LBL={imsak:'🌑 Imsak',subuh:'🌄 Subuh',dzuhur:'🕛 Dzuhur',ashar:'🌤️ Ashar',maghrib:'🌇 Maghrib',isya:'🌙 Isya'};
+const CD_LBL={imsak:' Imsak',subuh:'🌄 Subuh',dzuhur:'🕛 Dzuhur',ashar:'🌤️ Ashar',maghrib:'🌇 Maghrib',isya:'🌙 Isya'};
 
 const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 const DAYS_ID=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -522,11 +522,11 @@ function startCountdown(){
     const diff = Math.floor((next.dt - now) / 1000);
     const h=Math.floor(diff/3600), m=Math.floor((diff%3600)/60), s=diff%60;
     document.getElementById('cd-boxes').innerHTML =
-      `<div class="cd-box"><div class="cd-num">${pad(h)}</div><div class="cd-lbl">Jam</div></div>
+      `<div class="cd-box text-size"><div class="cd-num">${pad(h)}</div><div class="cd-lbl text-[10px]">Jam</div></div>
        <span style="color:var(--muted);padding-bottom:14px;font-size:1.2rem">:</span>
-       <div class="cd-box"><div class="cd-num">${pad(m)}</div><div class="cd-lbl">Mnt</div></div>
+       <div class="cd-box"><div class="cd-num">${pad(m)}</div><div class="cd-lbl text-[10px]">Mnt</div></div>
        <span style="color:var(--muted);padding-bottom:14px;font-size:1.2rem">:</span>
-       <div class="cd-box"><div class="cd-num">${pad(s)}</div><div class="cd-lbl">Dtk</div></div>`;
+       <div class="cd-box"><div class="cd-num">${pad(s)}</div><div class="cd-lbl text-[10px]">Dtk</div></div>`;
 
     document.querySelectorAll('.pr').forEach(r=>r.classList.remove('now'));
     document.getElementById('pr-'+next.k)?.classList.add('now');
